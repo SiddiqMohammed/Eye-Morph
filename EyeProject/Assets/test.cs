@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -13,18 +14,19 @@ public class test : MonoBehaviour
 	public RenderTexture[] textures;
 	public VideoClip[] clips;
 	float changer = 5f;
-	string[] files;
+	/*string[] files;*/
+	List<string> files = new List<string>();
 	int clipMonitor = 0;
 	int oldCount;
 
 	private void Start()
 	{
 		scanClips();
-	   
-		oldCount = files.Length;
-		print(oldCount);
 
-		if (files.Length != 0)
+		oldCount = files.Count;
+		/*print(oldCount);*/
+
+		if (files.Count != 0)
 		{
 			updateVideo();
 		}
@@ -33,14 +35,20 @@ public class test : MonoBehaviour
 	void updateVideo()
 	{
 		print(objects.Length);
-		print(files.Length);
+		print(files.Count);
 
-		print(files);
-		print(string.Join("\n", files));
 
-		Array.Reverse(files);
+		files.Reverse();
 
-		for (int i = 0; i < files.Length; i++)
+		if (files.Any())
+		{
+			if (files.Count > objects.Length)
+			{
+				files.RemoveAt(files.Count - 1);
+			}
+		}
+
+		for (int i = 0; i < files.Count; i++)
 		{
 			objects[i].GetComponent<VideoPlayer>().url = files[i];
 		}
@@ -49,7 +57,7 @@ public class test : MonoBehaviour
 
 	void OnApplicationQuit()
 	{
-		for(int i=0; i<files.Length; i++)
+		for (int i = 0; i < files.Count; i++)
 		{
 			textures[i].Release();
 		}
@@ -61,14 +69,14 @@ public class test : MonoBehaviour
 		if (changer < 0)
 		{
 			scanClips();
-	
-			clipMonitor = files.Length - oldCount;
-			
+
+			clipMonitor = files.Count - oldCount;
+
 			if (clipMonitor > 0)
 			{
 				updateVideo();
 
-				oldCount = files.Length;
+				oldCount = files.Count;
 			}
 			changer = 5f;
 		}
@@ -76,8 +84,12 @@ public class test : MonoBehaviour
 
 	void scanClips()
 	{
-		files = Directory.GetFiles(Application.dataPath + "/Videos", "*.mp4");
-		
+		files.Clear();
+		foreach (string file in Directory.GetFiles(Application.dataPath + "/Videos", "*.mp4"))
+		{
+			files.Add(file);
+		}
+
 	}
 	void assignVideos()
 	{
