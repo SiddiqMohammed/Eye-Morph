@@ -12,7 +12,7 @@ public class test : MonoBehaviour
 {
 	List<GameObject> objects= new List<GameObject>();
 	List<GameObject> videoPlayers = new List<GameObject>();
-	public List<RenderTexture> Textures = new List<RenderTexture>();
+	public List<RenderTexture> Textures;
 	public GameObject parent;
 	// public RenderTexture[] textures;
 	public VideoClip[] clips;
@@ -31,9 +31,15 @@ public class test : MonoBehaviour
 	{
         createImages();
 		ResponsiveScreen();
+		scanClips();
 		createVideoPlayer();
 
-		scanClips();
+		
+
+		for(int i=0; i<6; i++)
+        {
+			objects[i].GetComponent<RawImage>().texture = Textures[(int)Math.Floor((Decimal)i/2)];
+        }
 
 		oldCount = files.Count;
 		/*print(oldCount);*/
@@ -160,7 +166,7 @@ public class test : MonoBehaviour
 		// }
 		print("QUIT");
 	}
-
+/*
 	private void Update()
 	{
 		changer -= Time.deltaTime;
@@ -179,7 +185,7 @@ public class test : MonoBehaviour
 			changer = 5f;
 		}
 	}
-
+*/
 	void scanClips()
 	{
 		files.Clear();
