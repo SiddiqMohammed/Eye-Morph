@@ -64,13 +64,13 @@ public class test : MonoBehaviour
 		// randomizes the videos except the first video
 		videoPlayers[0].GetComponent<VideoPlayer>().url = files[files.Count - 1];
 
-		for(int i=0; i < objects.Count; i++)
+		for(int i=0; i < videoPlayers.Count; i++)
         {
 			// objects[i].GetComponent<RawImage>().texture = Textures[UnityEngine.Random.Range(0, files.Count)];
-			int x = UnityEngine.Random.RandomRange(1, files.Count);
-			int y = UnityEngine.Random.RandomRange(1, files.Count);
-			print(x);
-			print(y);
+			int x = UnityEngine.Random.Range(1, videoPlayers.Count);
+			int y = UnityEngine.Random.Range(0, files.Count);
+			// print(x);
+			// print(y);
 			videoPlayers[x].GetComponent<VideoPlayer>().url = files[y];
         }
 
