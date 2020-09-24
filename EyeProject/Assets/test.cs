@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using UnityEngine.Video;
+
 
 public class test : MonoBehaviour
 {
@@ -35,59 +37,46 @@ public class test : MonoBehaviour
 		createVideoPlayer();
 
 		
-
-		for(int i=0; i<6; i++)
+		// Textures.Reverse();
+		for(int i=0; i < objects.Count; i++)
         {
 			objects[i].GetComponent<RawImage>().texture = Textures[(int)Math.Floor((Decimal)i/2)];
         }
 
 		oldCount = files.Count;
-		/*print(oldCount);*/
 
-		// if (files.Count != 0)
-		// {
-		// 	updateVideo();
-		// }
-		// for (int i = 0; i < 3; i++)
-		// {
-		// 	videoPlayers[i].GetComponent<VideoPlayer>().url = files[i];
-		// }
 
 	}
 
 	void updateVideo()
 	{
-		// print(objects.Count);
-		// print(files.Count);
 
 
-		files.Reverse();
+		// Textures.Reverse();
 
-		// if (files.Any())
-		// {
-		// 	if (files.Count > videoPlayers.Count)
-		// 	{
-		// 		files.RemoveAt(files.Count - 1);
-		// 	}
-		// }
-		// print(Textures.Count);
-		// print(files.Count);
+		// updates the first video
+		// for(int i=0; i < videoPlayers.Count; i++)
+        // {
+		// 	videoPlayers[i].GetComponent<VideoPlayer>().url = files[files.Count - 1 -i];
+        // }
 
-		// for (int i = 0; i < files.Count; i++)
-		// {
-			// // objects[i].GetComponent<VideoPlayer>().url = files[i];
-			// GameObject go = new GameObject();
 
-			// // go.AddComponent<RawImage>();
-			// go.AddComponent<VideoPlayer>();
+		// randomizes the videos except the first video
+		videoPlayers[0].GetComponent<VideoPlayer>().url = files[files.Count - 1];
 
-			// go.name = objects.Count.ToString();
-			// objects.Add(go);
-		// createVideoPlayer();
-		// 	videoPlayers[i].GetComponent<VideoPlayer>().url = files[i];
-		// 	videoPlayers[i].GetComponent<VideoPlayer>().Play();
+		for(int i=0; i < objects.Count; i++)
+        {
+			// objects[i].GetComponent<RawImage>().texture = Textures[UnityEngine.Random.Range(0, files.Count)];
+			int x = UnityEngine.Random.RandomRange(1, files.Count);
+			int y = UnityEngine.Random.RandomRange(1, files.Count);
+			print(x);
+			print(y);
+			videoPlayers[x].GetComponent<VideoPlayer>().url = files[y];
+        }
 
-		// }
+
+
+		print("updated");
 
 
 	}
@@ -101,7 +90,6 @@ public class test : MonoBehaviour
 			GameObject go = new GameObject();
 
 			go.AddComponent<RawImage>();
-			// go.AddComponent<VideoPlayer>();
 
 			go.name = objects.Count.ToString();
 			objects.Add(go);
@@ -118,15 +106,12 @@ public class test : MonoBehaviour
             for (int j = 0; j < row; j++)
             {
 
-                // GameObject go = new GameObject();
-                // go.AddComponent<RawImage>();
-				// objects
+
                 objects[count].GetComponent<RectTransform>().sizeDelta = new Vector2(width, height);
                 objects[count].GetComponent<RectTransform>().pivot = new Vector2(0, 0);
                 objects[count].GetComponent<Transform>().position = new Vector3(i * width, j * height, 0);
                 objects[count].transform.parent = parent.transform;
-                // go.name = objects.Count.ToString();
-                // objects.Add(go);
+
 				count += 1;
 
 			}
@@ -166,7 +151,7 @@ public class test : MonoBehaviour
 		// }
 		print("QUIT");
 	}
-/*
+
 	private void Update()
 	{
 		changer -= Time.deltaTime;
@@ -185,7 +170,7 @@ public class test : MonoBehaviour
 			changer = 5f;
 		}
 	}
-*/
+
 	void scanClips()
 	{
 		files.Clear();
@@ -195,12 +180,4 @@ public class test : MonoBehaviour
 		}
 
 	}
-	// void assignVideos()
-	// {
-	// 	for (int i = 0; i < textures.Length; i++)
-	// 	{
-	// 		objects[i].GetComponent<VideoPlayer>().clip = clips[i];
-	// 		objects[i].GetComponent<VideoPlayer>().targetTexture = textures[i];
-	// 	}
-	// }
 }
