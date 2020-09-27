@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using UnityEngine.Video;
@@ -14,11 +15,13 @@ public class test : MonoBehaviour
 {
 	List<GameObject> objects= new List<GameObject>();
 	List<GameObject> videoPlayers = new List<GameObject>();
-	public List<RenderTexture> Textures;
+	List<RenderTexture> Textures = new List<RenderTexture>();
+	RenderTexture rt;
 	public GameObject parent;
 	// public RenderTexture[] textures;
 	public VideoClip[] clips;
 	float changer = 5f;
+	float shuffle = 20f;
 	/*string[] files;*/
 	List<string> files = new List<string>();
 	int clipMonitor = 0;
@@ -126,18 +129,22 @@ public class test : MonoBehaviour
             GameObject vp = new GameObject();
             vp.transform.parent = GameObject.Find("Player").transform;
             vp.AddComponent<VideoPlayer>();
-
+			rt = new RenderTexture(256, 256, 16, RenderTextureFormat.ARGB32);
+			rt.Create();
+			rt.name = Textures.Count.ToString();
+			
+			
             vp.GetComponent<VideoPlayer>().playOnAwake = true;
             vp.GetComponent<VideoPlayer>().isLooping = true;
             vp.GetComponent<VideoPlayer>().renderMode = VideoRenderMode.RenderTexture;
             vp.GetComponent<VideoPlayer>().aspectRatio = VideoAspectRatio.Stretch;
             vp.GetComponent<VideoPlayer>().playbackSpeed = 0.5f;
-            vp.GetComponent<VideoPlayer>().targetTexture = Textures[i];
+            vp.GetComponent<VideoPlayer>().targetTexture = rt;
             vp.GetComponent<VideoPlayer>().name = videoPlayers.Count.ToString();
             vp.GetComponent<VideoPlayer>().url = files[i];
-			
-            
-            videoPlayers.Add(vp);
+
+			Textures.Add(rt);
+			videoPlayers.Add(vp);
 
         }
         
@@ -155,8 +162,10 @@ public class test : MonoBehaviour
 	private void Update()
 	{
 		changer -= Time.deltaTime;
+		shuffle -= Time.deltaTime;
 		if (changer < 0)
 		{
+			
 			scanClips();
 
 			clipMonitor = files.Count - oldCount;
@@ -169,6 +178,14 @@ public class test : MonoBehaviour
 			}
 			changer = 5f;
 		}
+
+        if (shuffle < 0)
+        {
+			shuffleVideo();
+			shuffle = 20f;
+		}
+
+		
 	}
 
 	void scanClips()
@@ -180,4 +197,17 @@ public class test : MonoBehaviour
 		}
 
 	}
+
+
+	void shuffleVideo()
+    {
+		for(int i=1; i<objects.Count; i++)
+        {
+			int x = UnityEngine.Random.Range(0, Textures.Count);
+			objects[i].GetComponent<RawImage>().texture = Textures[x];
+			
+		}
+		
+		
+    }
 }
